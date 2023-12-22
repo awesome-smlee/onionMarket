@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="not">
+
+	<select id="getAllNot" resultType="notVo">
+		select * from notice
+	</select>
+	
+	<select id="getListCount" parameterType="String"
+		resultType="int">
+		select count(*) from notice
+	</select>
+	
+<!-- 	<select id="getNotNum" parameterType="string" resultType="notVo"> -->
+<!-- 		select * from mymember where mem_id=#{mem_id} -->
+<!-- 	</select> -->
+
+</mapper>

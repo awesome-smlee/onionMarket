@@ -1,0 +1,13 @@
+$(function () {
+	$("#proStatus").change(function() {
+	    // 선택된 거래상태 value 가져오기
+	    let status = $("#proStatus option:selected").val();
+	    console.log(status);
+	});
+	
+	$("#chatBtn").click(function() {
+		alert("현재 채팅이 불가능한 시간입니다.");
+	});
+	
+	
+});

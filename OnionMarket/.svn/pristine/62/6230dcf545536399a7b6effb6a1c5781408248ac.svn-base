@@ -1,0 +1,43 @@
+package kr.or.ddit.main.service;
+
+import java.util.List;
+
+import kr.or.ddit.main.dao.IMainDao;
+import kr.or.ddit.main.dao.MainDaoImpl;
+import kr.or.ddit.vo.ComJoinVO;
+import kr.or.ddit.vo.ProAndCateVO;
+
+public class MainServiceImpl implements IMainService {
+
+	private IMainDao dao;
+	private static MainServiceImpl service;
+	private MainServiceImpl() {
+		dao = MainDaoImpl.getInstance();
+	}
+	
+	public static MainServiceImpl getInstance() {
+		if (service == null) service = new MainServiceImpl();
+		return service;
+	}
+	
+	@Override
+	public List<ProAndCateVO> getProList() {
+		return dao.getProList();
+	}
+
+	@Override
+	public List<ComJoinVO> getComList() {
+		return dao.getComList();
+	}
+	
+	@Override
+	public List<ProAndCateVO> getProListPop() {
+		return dao.getProListPop();
+	}
+	
+	@Override
+	public List<ProAndCateVO> getProListNew() {
+		return dao.getProListNew();
+	}
+
+}

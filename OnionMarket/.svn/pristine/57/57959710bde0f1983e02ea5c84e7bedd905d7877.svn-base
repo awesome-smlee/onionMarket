@@ -1,0 +1,71 @@
+package kr.or.ddit.pro.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.pro.dao.IProDao;
+import kr.or.ddit.pro.dao.ProDaoImpl;
+import kr.or.ddit.vo.LocVO;
+import kr.or.ddit.vo.ProAndCateVO;
+import kr.or.ddit.vo.ProCateVO;
+
+public class ProServiceImpl implements IProService {
+
+	private IProDao dao;
+	private static ProServiceImpl service;
+	private ProServiceImpl() {
+		dao = ProDaoImpl.getInstance();
+	}
+	public static ProServiceImpl getInstance() {
+		if (service == null) service = new ProServiceImpl();
+		return service;
+	}
+
+	@Override
+	public Map getProPage(Map param) {
+		List<ProAndCateVO> list = dao.getProList(param);
+		int cnt = dao.getProCnt(param);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("page", param.get("page"));
+		map.put("rowsize", param.get("rowsize"));
+		map.put("rowcnt", cnt);
+		map.put("list", list);
+		
+		return map;
+	}
+
+	@Override
+	public List<ProCateVO> getProCateList() {
+		return dao.getProCateList();
+	}
+	
+	@Override
+	public ProAndCateVO getProDetail(String prodId) {
+		return dao.getProDetail(prodId);
+	}
+	
+	@Override
+	public int insertPro(ProAndCateVO proVo) {
+		
+		LocVO vo = dao.getLocation(proVo);
+		int cnt = 0;
+		
+		if(vo == null) {
+			dao.insertLocation(proVo);
+		} else {
+			proVo.setPro_loc_id(vo.getLoc_id());
+		}
+		
+		cnt = dao.insertPro(proVo);
+		
+		return cnt;
+	}
+	
+	@Override
+	public int updateProStatus(ProAndCateVO proVo) {
+		return dao.updateProStatus(proVo);
+	}
+	
+}

@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+/* 아이콘 cdn */
+/* @import url('https://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css'); */
+@import url('./xeicon.css');
+
+/* 기본 폰트 */
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}

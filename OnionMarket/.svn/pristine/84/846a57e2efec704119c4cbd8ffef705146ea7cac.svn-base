@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="comRep">
+	<select id="getRep" resultType="comRepVo" parameterType="int">
+		select c.cont, u.user_nm ins_id, c.ins_dt
+		from community_reply c
+		join users u on c.ins_id = u.user_id
+		where c.com_id = #{com_id}
+	</select>
+	
+	<select id="getRepCount" resultType="int" parameterType="int">
+		select count(cont)
+		from community_reply c
+		where c.com_id = #{com_id}
+	</select>
+	
+	<insert id="insertComRep" parameterType="comRepVo">
+		insert into community_reply (rep_id, cont, ins_dt, ins_id, com_id)
+		values (community_reply_seq.nextval, #{cont}, sysdate, #{ins_id}, #{com_id})
+	</insert>
+</mapper>

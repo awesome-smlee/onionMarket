@@ -1,0 +1,85 @@
+$(function () {
+	
+	// 등록 후 리다이렉트로 넘어온 경우 등록 성공 메시지 출력 
+	let uriParam = _util.getUriParameter();
+	if(uriParam.isInsert === 'true') {
+		alert(_msg.common.insertSuccessAlert);
+	}
+	
+	// 판매 물품 상태 변경
+	$("#proStatus").change((e) => {
+	    // 선택된 거래상태 value 가져오기
+	    let status = $("#proStatus option:selected").val();
+	    
+	    // 상태 변경 요청
+	    let data = _util.ajax(`${_ctx}/pro/proDetailStatus.do`, {
+	    	prod_status: status,
+	    	prod_id: $('#prod_id').val(),
+	    });
+	    
+	    // 상태 변경 메시지 출력
+	    alert(
+	    	data.result > 0 ? _msg.pro.updateStatusSuccessAlert
+	    		: _msg.pro.updateStatusFailAlert
+	    );
+	    
+	});
+	
+	// 좋아요 버튼 클릭
+	$("#likeBtn").click((e) => {
+		let isLike = $(e.currentTarget).hasClass('active');
+		console.log(isLike);
+		$(e.currentTarget).toggleClass('active');
+		
+		// 좋아요 요청
+		let data = _util.ajax(`${_ctx}/pro/proDetailLike.do`, {
+	    	prod_status: status,
+	    	prod_id: $('#prod_id').val(),
+	    	process: isLike ? 1 : 0 // 0: insert, 1: delete
+	    });
+		
+		let likeCnt = Number($('#likeCnt').text());
+		
+		switch(data.result) {
+			case 1:
+				alert(_msg.pro.insertLikeSuccessAlert);
+				$('#likeCnt').text(++likeCnt);
+				break;
+			case 2:
+				alert(_msg.pro.insertLikeFailAlert);
+				break;
+			case 3:
+				alert(_msg.pro.deleteLikeSuccessAlert);
+				$('#likeCnt').text(--likeCnt);
+				break;
+			case 4:
+				alert(_msg.pro.deleteLikeFailAlert);
+				break;
+		}
+	});
+	
+	// 채팅하기 버튼 클릭
+	$('#chatBtn').click((e) => {
+		
+	});
+	
+	
+	$('#updateBtn').click((e) => {
+		location.href = `${_ctx}/pro/proInsert.do?prod_id=${uriParam.prod_id}`;
+	});
+	
+	// 삭제하기
+	$('#deleteBtn').click((e) => {
+		if(confirm(_msg.common.deleteConfirm)) {
+			let data = _util.ajax(`${_ctx}/pro/proDelete.do`, {prod_id: $('#prod_id').val()});
+			
+			if(data.result > 0) {
+				alert(_msg.common.deleteSuccessAlert);
+				location.href = `${_ctx}/pro/proList.do`;
+			} else {
+				alert(_msg.common.deleteFailAlert);
+			}
+		}
+	});
+	
+});

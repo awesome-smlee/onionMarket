@@ -1,0 +1,25 @@
+package kr.or.ddit.police.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import kr.or.ddit.util.ResponseUtil;
+
+/**
+ * @author 이소망
+ * 신고하기 목록 보여주는 서블릿
+ */
+@WebServlet("/police/policeList.do")
+public class PoliceList extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 목록화면 view
+		request.getRequestDispatcher(ResponseUtil.viewOut("/police/policeList", request)).forward(request, response);
+	}
+
+}

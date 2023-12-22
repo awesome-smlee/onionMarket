@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="que">
+<!-- 		1:1문의 목록-->
+	<select id="queAllQue" resultType="queVo">
+    select que_id, tit, cont, to_char(ins_dt, 'yyyy-mm-dd') as ins_dt, ins_id, up_id
+    from question
+    order by ins_dt desc
+</select>
+
+	
+<!-- 	1:1문의 추가 -->
+<insert id="qeuIns" parameterType="queVo">
+    INSERT INTO question (que_id, tit, cont, ins_dt, ins_id, up_id) 
+    VALUES (QUE_ID_SEQ.NEXTVAL, #{tit}, #{cont}, SYSDATE, #{ins_id}, 0)
+</insert>
+
+<!-- 	1:1문의 삭제 -->
+	<delete id="queDel" parameterType="string">
+		delete from question where que_id = #{que_id} 
+	</delete>
+	
+ <!-- 문의사글 갯수 -->
+	<select id="getListCount" parameterType="String" resultType="int">
+		select count(*) from question where up_id = 0
+
+	</select>
+ 
+ 
+<insert id="qeuAnswer" parameterType="queVo">
+ INSERT INTO QUESTION (QUE_ID, TIT, CONT, INS_DT, INS_ID, UP_ID) 
+VALUES (QUE_ID_SEQ.NEXTVAL,  #{tit}, #{cont}, SYSDATE, #{ins_id}, #{up_id})
+ 
+</insert>
+ 
+  
+ <!-- 	1:1문의 삭제 -->
+	<delete id="admQueDel" parameterType="string">
+		delete from question where up_id = #{up_id} 
+	</delete>
+ 
+ 
+ 
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="not">
+<!-- 		공지사항 목 -->
+	<select id="getAllNot" resultType="notVo">
+		select noti_id, tit, cont, to_char(ins_dt, 'yyyy-mm-dd') ins_dt, vw_cnt, ins_id 
+		from notice
+	</select>
+	
+	
+<!-- 	공지사항 글 갯수 -->
+	<select id="getListCount" parameterType="String" resultType="int">
+		select count(*) from notice
+	</select>
+	
+<!-- 	<select id="getNotNum" parameterType="string" resultType="notVo"> -->
+<!-- 		select * from mymember where mem_id=#{mem_id} -->
+<!-- 	</select> -->
+
+<select id="searchNot" parameterType="map" resultType="notVO">
+    SELECT * FROM notice
+    <where>
+        <if test="option != null and keyword != null">
+            <choose>
+                <when test="option.equals('title')">
+                    AND tit like '%' || #{keyword} || '%'
+                </when>
+                <when test="option.equals('contents')">
+                    AND cont LIKE '%' || #{keyword} || '%)
+                </when>
+                <otherwise>
+                    AND (tit LIKE '%' || #{keyword} || '%' OR cont LIKE '%' || #{keyword} || '%')
+                </otherwise>
+            </choose>
+        </if>
+    </where>
+</select>
+
+<update id="cntUpNot"   parameterType="int" >
+    UPDATE notice SET vw_cnt = vw_cnt + 1 WHERE noti_id = #{noti_Id}
+</update>
+
+</mapper>

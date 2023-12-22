@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="file">
+	
+	<select id="getFileList" resultType="kr.or.ddit.vo.FileInfoVO">
+		select *
+		from fileinfo_test
+	</select>
+	
+	<insert id="insertFile" parameterType="kr.or.ddit.vo.FileInfoVO">
+		insert into fileinfo_test
+		(file_id, upload_nm, stored_nm, file_size, ins_dt, extension)
+		values 
+		(#{file_id}, #{upload_nm}, #{stored_nm}, #{file_size}, sysdate, #{extension})
+	</insert>
+	
+</mapper>

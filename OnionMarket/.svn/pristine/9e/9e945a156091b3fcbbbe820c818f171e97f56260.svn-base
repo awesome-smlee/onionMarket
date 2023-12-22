@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 이 문서는 mybatis의 환경 설정에 사용되는 XML문서입니다. -->
+<!DOCTYPE configuration 
+   PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-config.dtd">
+   
+<configuration>
+
+	<!-- DB연결 정보가 저장된 properties파일 정보 설정하기 -->
+	<properties resource="kr/or/ddit/mybatis/config/dbinfo.properties" />
+	
+	<!-- 기본 설정 셋팅 -->
+	<settings>
+		<!-- 데이터가 null로 전달되었으면 빈 칸으로 인식하지 말고 null로 인식해라... -->
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	<!-- typeAlais 설정하기 -->
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.vo.UsersVO" alias="usersVo"/>
+		<typeAlias type="kr.or.ddit.vo.ProdMyAllVO" alias="prodMyAllVo"/>
+		<typeAlias type="kr.or.ddit.vo.NotVO" alias="notVo"/>
+		<typeAlias type="kr.or.ddit.vo.ComJoinVO" alias="comVo"/>
+		<typeAlias type="kr.or.ddit.vo.ProAndCateVO" alias="proAndCateVo"/>
+		<typeAlias type="kr.or.ddit.vo.ProCateVO" alias="proCateVo"/>
+		<typeAlias type="kr.or.ddit.vo.LocVO" alias="locVo"/>
+		<typeAlias type="kr.or.ddit.vo.ComJoinVO" alias="comVo"/>
+		<typeAlias type="kr.or.ddit.vo.ComRepVO" alias="comRepVo"/>
+		<typeAlias type="kr.or.ddit.vo.ComNewsVO" alias="comNewsVo"/>
+		<typeAlias type="kr.or.ddit.vo.PoliceVO" alias="polVo"/>
+		<typeAlias type="kr.or.ddit.vo.QueVO" alias="queVo"/>
+		<typeAlias type="kr.or.ddit.vo.FileInfoVO" alias="fileVo"/>
+		<typeAlias type="kr.or.ddit.vo.WishVO" alias="wishVo"/>
+	</typeAliases>
+	
+	<!-- DB연결 설정하기 -->
+	<environments default="oracleEnv">
+		<environment id="oracleEnv">
+			<transactionManager type="JDBC"/>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${user}"/>
+				<property name="password" value="${pass}"/>
+			</dataSource>
+			
+		</environment>
+		
+	</environments>
+	
+	<!-- DB에 사용되는 SQL문이 저장된 mapper파일 등록하는 부분 -->
+	<mappers>
+		<mapper resource="kr/or/ddit/mybatis/mappers/com-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/comrep-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/comnews-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/users-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/prodmy2-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/notice-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/pro-mapper.xml"/>
+      	<mapper resource="kr/or/ddit/mybatis/mappers/main-mapper.xml"/>
+		<mapper resource="kr/or/ddit/mybatis/mappers/question-mapper.xml"/>
+      	<mapper resource="kr/or/ddit/mybatis/mappers/police-mapper.xml"/>
+      	<mapper resource="kr/or/ddit/mybatis/mappers/question-mapper.xml"/>
+	</mappers>
+
+</configuration>

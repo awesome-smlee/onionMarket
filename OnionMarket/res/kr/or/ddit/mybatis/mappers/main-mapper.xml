@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="main">
+	<!-- 우리 동네 물품 조회 -->
+	<select id="getProList" resultType="proAndCateVo">
+		select a.tit
+			 , a.prod_id
+			 , a.price
+		     , b.gu as pro_gu
+		     , b.dong as pro_dong
+		from product a
+		left join location b
+		    on a.loc_id = b.loc_id
+		<if test="loc_id gt 0">
+			<where>
+				a.loc_id = #{loc_id}
+			</where>		
+		</if>
+		order by a.ins_dt desc
+		
+	</select>
+	
+	<!-- 실시간 인기 물품 조회 -->
+	<select id="getProListPop" resultType="proAndCateVo">
+		select a.tit
+		 	 , a.prod_id
+		     , a.price
+		     , a.vw_cnt
+		     , b.gu as pro_gu
+		     , b.dong as pro_dong
+		from product a
+		left join location b
+		    on a.loc_id = b.loc_id
+		order by a.vw_cnt desc
+	</select>
+	
+	<!-- 방금 등록된 물품 조회 -->
+	<select id="getProListNew" resultType="proAndCateVo">
+		select a.tit
+			 , a.prod_id
+		     , a.price
+		     , a.vw_cnt
+		     , a.ins_dt
+		     , b.gu as pro_gu
+		     , b.dong as pro_dong
+		from product a
+		left join location b
+		    on a.loc_id = b.loc_id
+		order by a.ins_dt desc
+	</select>
+	
+	
+	<!-- 우리 동네 커뮤니티 조회 -->
+	<select id="getComList" resultType="comVo">
+		select a.tit
+		     , a.vw_cnt
+		     , to_char(a.ins_dt, 'YYYY-MM-DD') as ins_dt
+		     , b.user_id
+		     , b.nick_nm
+		     , c.gu
+		     , c.dong
+		from community a
+		left join users b
+		    on a.ins_id = b.user_id
+		left join location c
+		    on b.loc_id = c.loc_id
+	</select>
+	
+	<!-- 물품 첨부파일 조회 -->
+	<select id="getProFileList" resultType="fileVo">
+		select b.file_id
+			 , b.upload_nm
+			 , b.stored_nm
+			 , b.file_size
+			 , b.ins_dt
+			 , b.extension
+		from product_file a
+		left join fileinfo b
+			on b.file_id = a.file_id
+		where prod_id = #{prod_id}
+	</select>
+</mapper>

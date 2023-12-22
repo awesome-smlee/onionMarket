@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="pro">
+	
+	<!-- 물품 목록 -->
+	<select id="getProList" resultType="proAndCateVo" parameterType="Map">
+		select sub.*
+		from (
+		    select row_number() over (
+		            order by 
+		            <choose>
+		            	<!-- 최신순 -->
+		    			<when test="sort_a != null">
+		    				a.ins_dt desc		
+		    			</when>
+		    			<!-- 좋아요순 -->
+		    			<when test="sort_b != null">
+		    				nvl(e.like_cnt, 0) desc
+		    			</when>
+		    			<!-- 낮은 가격순 -->
+		    			<when test="sort_c != null">
+		    				a.price asc
+		    			</when>
+		    			<!-- 높은 가격순 -->
+		    			<when test="sort_d != null">
+		    				a.price desc
+		    			</when>
+		    			<otherwise>
+		    				a.ins_dt desc
+		    			</otherwise>
+		    		</choose>
+		            
+		        ) as num
+		         , a.prod_id
+		         , a.tit
+		         , a.price
+		         , a.ins_dt
+		         , b.cate_nm
+		         , c.user_id
+		         , d.gu as pro_gu
+		         , d.dong as pro_dong
+		         , nvl(e.like_cnt, 0) as like_cnt
+		    from product a
+		    left join product_category b
+		        on a.cate_id = b.cate_id
+		    left join users c
+		        on a.ins_id = c.user_id
+		    left join location d
+		        on a.loc_id = d.loc_id
+		    left join (
+		        select prod_id
+		             , count(*) as like_cnt
+		        from wishlist
+		        group by prod_id
+		    ) e
+		        on a.prod_id = e.prod_id
+		   <where>
+		   		<if test="search_tit != null and search_tit != '' ">
+		   			a.tit like '%'||#{search_tit}||'%'
+		   		</if>
+		   		<if test="cate_id != null and cate_id != '' ">
+		   			and a.cate_id = #{cate_id}
+		   		</if>
+		   </where>
+		    
+		) sub
+		where sub.num between (#{page}-1) * #{rowsize} + 1 and (#{page} * #{rowsize})
+		order by sub.num asc
+	</select>
+	
+	<!-- 물품 목록 갯수 -->
+	<select id="getProCnt" resultType="int">
+		select count(*) as rowcount
+		from (
+		    select row_number() over (
+		            order by a.ins_dt desc
+		         ) as num
+		         , a.prod_id
+		         , a.tit
+		         , a.price
+		         , a.ins_dt
+		         , b.cate_nm
+		         , c.user_id
+		         , d.gu as pro_gu
+		         , d.dong as pro_dong
+		    from product a
+		    left join product_category b
+		        on a.cate_id = b.cate_id
+		    left join users c
+		        on a.ins_id = c.user_id
+		    left join location d
+		        on c.loc_id = d.loc_id
+		    <where>
+		   		<if test="search_tit != null and search_tit != '' ">
+		   			a.tit like '%'||#{search_tit}||'%'
+		   		</if>
+		   		<if test="cate_id != null and cate_id != '' ">
+		   			and a.cate_id = #{cate_id} 
+		   		</if>
+		    </where>
+		) sub
+	</select>
+	
+	<!-- 물품 카테고리 목록 -->
+	<select id="getProCateList" resultType="proCateVo">
+		select cate_id
+		     , cate_nm
+		from product_category
+	</select>
+	
+	<!-- 물품 상세 -->
+	<select id="getProDetail" resultType="proAndCateVo" parameterType="proAndCateVo">
+		select a.tit,
+		       a.prod_id,
+		       a.cont,
+		       a.price,
+		       a.ins_id,
+		       a.status,
+		       a.lat,
+		       a.lng,
+		       to_char(a.ins_dt,'YYYY-MM-DD') as ins_dt,
+		       a.cate_id,
+		       a.vw_cnt,
+		       b.cate_nm,
+		       c.gu as pro_gu,
+		       c.dong as pro_dong,
+		       d.user_id,
+		       nvl(e.like_cnt, 0) as like_cnt,
+		       decode(f.ins_id, null, 0, 1) as is_like
+		from product a
+		left join product_category b 
+		    on a.cate_id = b.cate_id    
+		left join location c
+		    on a.loc_id = c.loc_id
+		left join users d
+		    on a.ins_id = d.user_id
+		left join (
+	        select prod_id
+	             , count(*) as like_cnt
+	        from wishlist
+	        group by prod_id
+	    ) e
+	        on a.prod_id = e.prod_id
+	    left join wishlist f
+            on f.prod_id = a.prod_id
+            and f.ins_id = #{like_ins_id}
+		where a.prod_id = #{prod_id}
+	</select>
+	
+	<!-- 물품 등록 -->
+	<insert id="insertPro" parameterType="proAndCateVo">
+		<selectKey resultType="int" keyProperty="prod_id" order="AFTER">
+			select prod_id_seq.currval from dual
+    	</selectKey>
+		insert into product (prod_id, tit, cont, price, ins_dt, cate_id, lat, lng, loc_id, ins_id)
+		values (prod_id_seq.nextval, #{tit}, #{cont}, #{price}, sysdate, #{cate_id}, #{lat}, #{lng}, #{pro_loc_id}, #{ins_id})
+	</insert>
+	
+	<!-- 물품 수정 -->
+	<update id="updatePro" parameterType="proAndCateVo">
+		update product
+		set tit = #{tit},
+			cont = #{cont},
+			price = #{price},
+			upd_dt = sysdate,
+			cate_id = #{cate_id},
+			lat = #{lat},
+			lng = #{lng},
+			loc_id = #{pro_loc_id}
+		where prod_id = #{prod_id}
+	</update>
+
+	<!-- 물품 상세 / 거래상태 변경 -->
+	<update id="updateProStatus" parameterType="proAndCateVo">
+		update product
+		set status = #{status}
+		where prod_id = #{prod_id}
+	</update>
+	
+	<!-- 좋아요 버튼 클릭시 추가 -->
+	<insert id="insertLike" parameterType="wishVo">
+		insert into wishlist
+		(prod_id, ins_id, ins_dt)
+		values
+		(#{prod_id}, #{ins_id}, sysdate)
+	</insert>
+	
+	<!-- 좋아요 버튼 클릭시 추가 -->
+	<delete id="deleteLike" parameterType="wishVo">
+		delete from wishlist
+		where prod_id = #{prod_id}
+		and ins_id = #{ins_id}
+	</delete>
+	
+	<!-- 동네 조회 -->
+	<select id="getLocation" resultType="locVo">
+		select loc_id
+		     , gu
+		     , dong
+		from location
+		where gu = #{pro_gu} 
+		  and dong = #{pro_dong}
+	</select>
+	
+	<!-- db에 동네 정보가 없을시 추가 -->
+	<insert id="insertLocation" parameterType="proAndCateVo">
+		<selectKey resultType="int" keyProperty="pro_loc_id" order="AFTER">
+			select loc_id_seq.currval as pro_loc_id from dual
+    	</selectKey>
+		insert into location (loc_id, gu, dong)
+		values (loc_id_seq.nextval, #{pro_gu}, #{pro_dong})
+	</insert>
+	
+	<!-- 첨부파일 등록 -->
+	<insert id="insertFile" parameterType="fileVo">
+		insert into fileinfo
+		(file_id, upload_nm, stored_nm, file_size, ins_dt, extension)
+		values 
+		(#{file_id}, #{upload_nm}, #{stored_nm}, #{file_size}, sysdate, #{extension})
+	</insert>
+	
+	<!-- 물품 첨부파일 등록 -->
+	<insert id="insertProFile" parameterType="fileVo">
+		insert into product_file
+		(file_id, prod_id)
+		values 
+		(#{file_id}, #{prod_id})
+	</insert>
+	
+	<!-- 물품 첨부파일 조회 -->
+	<select id="getProFileList" resultType="fileVo">
+		select b.file_id
+			 , b.upload_nm
+			 , b.stored_nm
+			 , b.file_size
+			 , b.ins_dt
+			 , b.extension
+		from product_file a
+		left join fileinfo b
+			on b.file_id = a.file_id
+		where prod_id = #{prod_id}
+	</select>
+	
+	<!-- 첨부파일 삭제 -->
+	<delete id="deleteFile" parameterType="fileVo">
+		delete from fileinfo
+		where file_id = #{file_id}
+	</delete>
+	
+	<!-- 물품 삭제 -->
+	<delete id="deletePro" parameterType="proAndCateVo">
+		delete from product
+		where prod_id = #{prod_id}
+	</delete>
+	
+	<!-- 조회수 증가  -->
+	<update id="updateViewCnt" parameterType="proAndCateVo">
+		update product
+			set vw_cnt = vw_cnt+1
+		where prod_id = #{prod_id}
+	</update>
+
+</mapper>

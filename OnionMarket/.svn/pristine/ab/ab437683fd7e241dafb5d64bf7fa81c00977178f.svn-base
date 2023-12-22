@@ -1,0 +1,54 @@
+package kr.or.ddit.my.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import kr.or.ddit.my.service.IUsersMyService;
+import kr.or.ddit.my.service.UsersMyServiceImpl;
+import kr.or.ddit.vo.LocVO;
+import kr.or.ddit.vo.UsersVO;
+
+@WebServlet("/my/locationMy.do")
+public class LocationMy extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		request.getRequestDispatcher("/WEB-INF/view/my/my_location.jsp")
+		.forward(request, response);
+	}
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		
+		//사용자한테 받기
+		String dong = request.getParameter("dong");
+		String userid = "test01";
+	
+		
+		//받은거 vo에 저장하기 
+        UsersVO usersVo = new UsersVO();
+        LocVO locvo = new LocVO();
+        usersVo.setUser_id(userid);
+        locvo.setDong(dong);
+		
+		//이거 db에 업데이트하기
+		IUsersMyService service = UsersMyServiceImpl.getInstance();
+		service.locationMy(usersVo);
+		
+		
+		System.out.println(dong);
+        //작업완료되면 
+		response.sendRedirect(request.getContextPath()+"/WEB-INF/view/my/my_main.jsp");
+		
+	
+		
+	}
+
+}

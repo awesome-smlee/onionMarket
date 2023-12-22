@@ -1,0 +1,28 @@
+package kr.or.ddit.pro.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import kr.or.ddit.util.ResponseUtil;
+/**
+ * @author 이소망
+ * 물품 거래 - 수정화면 보여주는 서블릿
+ */
+@WebServlet("/pro/proUpdate.do")
+public class ProUpdate extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		
+		// 수정화면 view
+		request.getRequestDispatcher(ResponseUtil.viewOut("/pro/proUpdate", request)).forward(request, response);
+	}
+
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="prodmy">
+   
+   <!-- 판매중인 물품 -->
+   <select id="sellListMy" parameterType="string" resultType="prodMyAllVo">
+   select cate_nm, tit, price 
+   from product a 
+   join product_category b
+   on a.cate_id = b.cate_id
+   join users c
+   on c.user_id = ins_id
+   where user_id = #{user_id} and a.status = 0 or a.status = 1
+   </select>
+   
+   <!-- 거래완료인 물품 -->
+   <select id="sellEndMy" parameterType="string" resultType="prodMyAllVo"> 
+   select b.cate_nm, tit, price 
+   from product a 
+   join product_category b
+   on a.cate_id = b.cate_id
+   join users c
+   on c.user_id = ins_id
+   where user_id = #{user_id} and a.status = 2
+   </select>
+   
+   <!-- 내가 구매한 물품 -->
+   <select id="buyListMy" parameterType="string" resultType="prodMyAllVo">
+   select c.cate_nm, b.tit, b.price
+    from review a
+    join product b
+    on a.prod_id = b.prod_id
+    join product_category c
+    on b.cate_id = c.cate_id
+    join chat d
+    on b.prod_id = d.prod_id
+    where d.user_id = #{user_id}
+   </select>
+   
+   <!-- 후기작성 
+   후기 시퀀스랑 첨부파일 시퀀스 생성하고-->
+   
+   <insert id="reviewUpload1" parameterType="prodMyAllVo">
+   insert info fileinfo (file_id, upload_nm, stored_nm, file_size, ins_dt)
+   values(fileinfo_seq.nextval, #{upload_nm}, #{stored_nm}, #{file_size}, #{ins_dt})
+   </insert>
+   
+   <update id="reviewUpload2" parameterType="prodMyAllVo">
+   update review
+   set 
+   rev_id = rev_id_seq,
+   tit = #{tit},
+   cont = #{cont},
+   ins_dt = #{ins_dt},
+   star = #{star},
+   file_id =  fileinfo_seq.currval
+   where user_id = #{user_id}
+   </update>
+   
+   
+   <!-- 후기보기 -->
+   <select id="review" parameterType="prodMyAllVo" resultType="prodMyAllVo" >
+   select a.tit, a.star, a.cont from review a
+    join product b
+    on a.prod_id = b.prod_id
+    where buyer_id = #{buyer_id} and b.prod_id = #{prod_id}
+   </select>
+   
+   <!-- 위시리스트 -->
+   <select id="wishlistMy" parameterType="string" resultType="prodMyAllVo">
+   select c.cate_nm, b.tit, b.price from wishlist a
+   join product b
+   on a.prod_id = b.prod_id 
+   join product_category c
+    on b.cate_id = c.cate_id
+    join users d
+    on d.user_id = a.ins_id
+    where d.user_id = #{user_id}
+    </select>
+   
+   <!-- 내가 작성한 커뮤니티 글 --> 
+   <select id="CommunityMy" parameterType="string" resultType="prodMyAllVo">
+   select b.cate_nm, a.tit, a.ins_dt
+   from community a 
+   join community_category b
+   on a.cate_id = b.cate_id
+   join users c
+   on c.user_id = a.ins_id
+   where a.ins_id = #{user_id}
+   </select>
+   
+   <select id="Location" parameterType="string" resultType="int">
+   select loc_id from location where dong = #{dong}
+   </select>
+   
+   
+   
+</mapper>

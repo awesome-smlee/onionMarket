@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="com">
+	<select id="getAllCom" resultType="comVo">
+		select c.com_id, u.nick_nm, c.tit, cc.cate_nm, l.dong, to_char(c.ins_dt, 'yyyy-mm-dd') ins_dt, c.vw_cnt
+	    from users u
+	    join community c on u.user_id = c.ins_id
+	    join community_category cc on c.cate_id = cc.cate_id
+	    join location l on u.loc_id = l.loc_id
+	   	order by c.com_id desc
+	</select>
+	
+	<select id="getCateNm" resultType="comVo">
+		select cate_nm
+		from community_category
+	</select>
+	
+	<insert id="comInsert" parameterType="comVo">
+		insert into community (com_id, tit, cont, ins_dt, upd_dt, vw_cnt, lk_cnt, cate_id, ins_id, lat, lng)
+		values (community_seq.nextval, #{tit}, #{cont}, sysdate, null, 0, 0, (select cate_id from community_category where cate_nm = #{cate_nm}), #{ins_id}, null, null)
+	</insert>
+	
+	<select id="getByCate" parameterType="String" resultType="comVo">
+		select c.com_id, u.nick_nm, c.tit, cc.cate_nm, l.dong, to_char(c.ins_dt, 'yyyy-mm-dd') ins_dt, c.vw_cnt
+	    from users u
+	    join community c on u.user_id = c.ins_id
+	    join community_category cc on c.cate_id = cc.cate_id
+	    join location l on u.loc_id = l.loc_id
+        where cate_nm = #{cate_nm}
+	   	order by c.com_id desc
+	</select>
+	
+	<select id="getByGu" parameterType="String" resultType="comVo">
+		select c.com_id, u.nick_nm, c.tit, cc.cate_nm, l.dong, to_char(c.ins_dt, 'yyyy-mm-dd') ins_dt, c.vw_cnt
+	    from users u
+	    join community c on u.user_id = c.ins_id
+	    join community_category cc on c.cate_id = cc.cate_id
+	    join location l on u.loc_id = l.loc_id
+        where gu = #{gu}
+	   	order by c.com_id desc
+	</select>
+	
+	<select id="getSearchCom" resultType="comVo" parameterType="String">
+		select c.com_id, u.nick_nm, c.tit, cc.cate_nm, l.dong, to_char(c.ins_dt, 'yyyy-mm-dd') ins_dt, c.vw_cnt
+	    from users u
+	    join community c on u.user_id = c.ins_id
+	    join community_category cc on c.cate_id = cc.cate_id
+	    join location l on u.loc_id = l.loc_id
+        where c.tit like '%' || #{keyword} || '%'
+	   	order by c.com_id desc
+	</select>
+	
+	<select id="getComDetail" resultType="comVo" parameterType="int">
+		select u.nick_nm, c.tit, c.cont, cc.cate_nm, c.vw_cnt, c.lk_cnt
+	    from users u
+	    join community c on u.user_id = c.ins_id
+	    join community_category cc on c.cate_id = cc.cate_id
+        where c.com_id = #{com_id}
+	</select>
+	
+	<update id="incrementVwCnt" parameterType="int">
+		update community
+		set vw_cnt = vw_cnt + 1
+		where com_id = #{com_id}
+	</update>
+	
+	<select id="getUpdateData" parameterType="int" resultType="comVo">
+		select tit, cont
+		from community
+		where com_id = #{com_id}
+	</select>
+	
+	<update id="comUpdate" parameterType="comVo">
+		update community
+		set tit = #{tit}, cont = #{cont}, upd_dt = sysdate, 
+			cate_id = (select cate_id from community_category where cate_nm = #{cate_nm})
+		where com_id = #{com_id}
+	</update>
+	
+	<delete id="comDelete" parameterType="int">
+		delete from community
+		where com_id = #{com_id}
+	</delete>
+	
+</mapper>

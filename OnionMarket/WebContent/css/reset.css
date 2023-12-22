@@ -1,0 +1,374 @@
+@charset "UTF-8";
+@import url('webfonts.css');
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+time,
+figure,
+article,
+nav,
+header,
+footer,
+hgroup,
+video,
+audio,
+aside,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    vertical-align: baseline;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    font-family: 'Pretendard', sans-serif;
+    color: #000;
+}
+
+body {
+    font-size: 0.9rem;
+}
+
+* {
+    -webkit-text-size-adjust: none;
+    box-sizing: border-box;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+caption,
+th,
+td {
+    text-align: left;
+    font-weight: normal;
+}
+
+figure,
+article,
+header,
+footer,
+nav,
+hgroup,
+video,
+audio,
+aside,
+main {
+    display: block;
+}
+
+em,
+i,
+var {
+    font-style: normal;
+    font-weight: normal;
+}
+
+button {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    outline: 0;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+::selection {
+    background: rgba(128, 154, 241, 0.169);
+}
+
+/*************************************
+    # input
+************************************/
+input[type=text],
+input[type=tel],
+input[type=email],
+input[type=password],
+input[type=url],
+input[type=number],
+input[type=search],
+input[type=button],
+input[type=submit],
+textarea,
+button {
+    -webkit-appearance: none;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    outline: none;
+    font-family: inherit;
+    border: 0;
+}
+
+textarea {
+    resize: none;
+}
+
+input[type=button],
+input[type=submit],
+button {
+    cursor: pointer;
+}
+
+input[type=radio] {
+    border-radius: 50%;
+}
+
+input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration {
+    display: none;
+}
+
+select {
+    outline: none;
+}
+
+/* 필요시 클래스 추가
+--------------------------------------------- */
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mb-30 {
+    margin-bottom: 30px;
+}
+
+/* 오른쪽 선 */
+.border-r {
+    border-right: 1px solid #f2f2f2;
+}
+
+/* 가운데 정렬 */
+.txt-center {
+    text-align: center;
+}
+
+/* 글 1줄로 말줄임 */
+.txt-overflow {
+    text-transform: capitalize;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+
+/* badge */
+[class*="badge"] {
+    padding: 5px 20px;
+    border-radius: 7px;
+    text-align: center;
+    color: #fff;
+    min-width: 90px;
+}
+
+.badge1 {
+    background: #496cdd;
+}
+
+.badge2 {
+    background: #ff6161;
+}
+
+.badge3 {
+    background: #e6e6e6;
+    color: #000;
+}
+
+
+/* 스크롤처리
+--------------------------------------------- */
+@media (max-width:1920px) and (max-height: 1080px) {
+    body {
+        min-width: 1900px;
+        min-height: 910px;
+    }
+}
+
+/* pager
+--------------------------------------------- */
+.pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.pager>* {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+    overflow: hidden;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    vertical-align: top;
+    color: #a0a6ad;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 300;
+    transition: color 0.3s;
+}
+
+.pager .active {
+    font-weight: 700;
+    color: var(--main-color);
+}
+
+.pager .arr {
+    position: relative;
+    margin: 0 0.1rem;
+}
+
+.pager .arr.prev {
+    margin-right: 0.5rem;
+}
+
+.pager .arr.next {
+    margin-left: 0.5rem;
+}
+
+.pager .arr::before {
+    content: "\e93d";
+    font-family: var(--icon);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+    color: #a0a6ad;
+}
+
+.pager .arr.next::before,
+.pager .arr.last::before {
+    content: "\e940";
+}
+
+.pager .arr.dot::before {
+    content: "...";
+}
+
+.pager .arr.first::after {
+    content: "\e93d";
+    font-family: var(--icon);
+    position: absolute;
+    top: 50%;
+    left: 24%;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+    color: #a0a6ad;
+}
+
+.pager .arr.last::after {
+    content: "\e940";
+    font-family: var(--icon);
+    position: absolute;
+    top: 50%;
+    left: 24%;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+    color: #a0a6ad;
+}

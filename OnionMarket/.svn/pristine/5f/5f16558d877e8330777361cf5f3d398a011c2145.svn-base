@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="pol">
+	<select id="getAllPol" resultType="polVo">
+		select pol_id, tit, ins_id, to_char(ins_dt, 'yyyy-mm-dd') ins_dt,
+        	case when up_id is null then 'N' else 'Y' end status
+		from police
+		order by pol_id desc
+	</select>
+	
+	<insert id="polInsert" parameterType="polVo">
+		insert into police (pol_id, tit, cont, ins_dt, ins_id)
+		values (police_seq.nextval, #{tit}, #{cont}, sysdate, #{ins_id})
+	</insert>
+</mapper>

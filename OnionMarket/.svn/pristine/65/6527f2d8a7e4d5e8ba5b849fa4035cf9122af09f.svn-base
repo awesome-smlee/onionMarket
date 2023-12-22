@@ -1,0 +1,79 @@
+package kr.or.ddit.com.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import kr.or.ddit.com.service.ComServiceImpl;
+import kr.or.ddit.com.service.IComService;
+import kr.or.ddit.vo.ComJoinVO;
+
+@MultipartConfig
+@WebServlet("/com/comInsert.do")
+public class ComInsert extends HttpServlet { // GET: UPDATE, POST: INSERT
+	private static final long serialVersionUID = 1L;
+       
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		
+		IComService service = ComServiceImpl.getInstance();
+		List<ComJoinVO> comList = service.getAllCom();
+		List<ComJoinVO> cateList = service.getCateNm();
+		
+		// ------------------------------- COMMUNITY UPDATE -------------------------------
+		String comId = request.getParameter("comId"); 
+		String tit = request.getParameter("title");
+		String cont = request.getParameter("content");
+		String cate_nm = request.getParameter("cate");
+		
+		ComJoinVO comVo = new ComJoinVO();
+		comVo.setCom_id(Integer.parseInt(comId));
+		comVo.setTit(tit);
+		comVo.setCont(cont);
+		comVo.setCate_nm(cate_nm);
+		
+		service.comUpdate(comVo);
+		// ---------------------------------------------------------------------------------
+		
+		request.setAttribute("comList", comList);
+		request.setAttribute("cateList", cateList);
+		request.getRequestDispatcher(request.getContextPath() + "/com/comList.do")
+		.forward(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		
+		IComService service = ComServiceImpl.getInstance();
+		List<ComJoinVO> comList = service.getAllCom();
+		List<ComJoinVO> cateList = service.getCateNm();
+		
+		// ------------------------------- COMMUNITY INSERT -------------------------------
+		String tit = request.getParameter("title");
+		String cont = request.getParameter("content");
+		String cate_nm = request.getParameter("cate");
+		String ins_id = "hoho55";
+		
+		ComJoinVO comVo = new ComJoinVO();
+		comVo.setTit(tit);
+		comVo.setCont(cont);
+		comVo.setIns_id(ins_id);							// 로그인 구현 후 세션 관리할 때 수정
+		comVo.setCate_nm(cate_nm);
+		
+		service.comInsert(comVo);
+		// ---------------------------------------------------------------------------------
+		
+		request.setAttribute("comList", comList);
+		request.setAttribute("cateList", cateList);
+		request.getRequestDispatcher(request.getContextPath() + "/com/comList.do")
+		.forward(request, response);
+	}
+	
+}
